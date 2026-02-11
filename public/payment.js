@@ -12,10 +12,8 @@ async function submitPayment() {
   const btn = document.getElementById("payBtn");
   const file = document.getElementById("proof").files[0];
 
-  if (!file) {
-    alert("Upload payment screenshot");
-    return;
-  }
+  if (!file) return alert("Upload payment screenshot");
+  if (file.size > 5 * 1024 * 1024) return alert("Screenshot too large. Max 5MB.");
 
   const fd = new FormData();
   fd.append("screenshot", file);
@@ -29,16 +27,16 @@ async function submitPayment() {
     const res = await fetch("/pay", { method: "POST", body: fd });
     const data = await res.json();
 
-    if (data.success) {
-      alert("Payment submitted. We will verify and print your order.");
-      localStorage.removeItem("order");
-      window.location.href = "/";
+    if (!res.ok) {
+      alert(data.error || "Submit failed");
+      btn.disabled = false;
+      btn.innerText = oldText;
       return;
     }
 
-    alert(data.error || "Something went wrong");
-    btn.disabled = false;
-    btn.innerText = oldText;
+    alert("Payment submitted. We will verify and print.");
+    localStorage.removeItem("order");
+    window.location.href = "/";
   } catch (e) {
     alert("Network error. Try again.");
     btn.disabled = false;

@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Print Service</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Online Print Service</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-<div class="bg-grid"></div>
-
-<div class="container">
-  <div class="hero">
-    <div class="brand">
-      <div class="logo"></div>
-      <div class="title">
-        <h1>Online Print Service</h1>
-        <p class="sub">Black & White prints • Fast orders • Simple payment</p>
+  <div class="container">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <h1>Online Print Service</h1>
+          <p class="sub">Black & White • Fast • Simple</p>
+        </div>
       </div>
+      <div class="badge">B/W</div>
     </div>
-    <div class="badge"><span class="dot"></span>Live</div>
+
+    <div class="card">
+      <div class="field">
+        <div class="label">Select file</div>
+        <input type="file" id="file">
+        <div class="small">Max file size: 10MB</div>
+      </div>
+
+      <div class="field">
+        <div class="label">Enter number of pages</div>
+        <input type="number" id="pages" placeholder="Example: 12">
+      </div>
+
+      <button class="btn" id="uploadBtn" onclick="upload()">Continue to Payment</button>
+      <div class="small">Pricing: 1–2 pages ₹5 • 3–10 ₹3/page • 10+ ₹2.5/page</div>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="field">
-      <div class="label">Upload file (PDF / Image / Doc)</div>
-      <input type="file" id="file">
-    </div>
-
-    <div class="field">
-      <div class="label">Enter number of pages</div>
-      <input type="number" id="pages" placeholder="Example: 12">
-    </div>
-
-    <button class="btn" id="uploadBtn" onclick="upload()">Continue to Payment</button>
-    <div class="small">Pricing: 1–2 pages ₹5 • 3–10 pages ₹3/page • 10+ pages ₹2.5/page</div>
-  </div>
-</div>
-
-<script src="/script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>

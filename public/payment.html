@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Payment</title>
   <link rel="stylesheet" href="/style.css">
 </head>
@@ -11,27 +13,28 @@
     <div class="brand">
       <div class="logo"></div>
       <div class="title">
-        <h1>Complete Payment</h1>
-        <p class="sub">Scan QR and upload payment screenshot</p>
+        <h1>Payment</h1>
+        <p class="sub">Scan QR and upload screenshot</p>
       </div>
     </div>
-    <div class="badge">B/W Printing</div>
+    <div class="badge">Secure</div>
   </div>
 
   <div class="card">
-    <div id="info" class="small" style="font-size:14px;color:#f3f3f6;margin-bottom:12px;"></div>
+    <div id="info" class="infoLine"></div>
 
-    <div class="row" style="justify-content:center;">
+    <div class="center">
       <img class="qr" src="/qr.png" alt="QR Code">
     </div>
 
-    <div class="field" style="margin-top:14px;">
+    <div class="field">
       <div class="label">Upload payment screenshot</div>
       <input type="file" id="proof" accept="image/*">
+      <div class="small">Max screenshot size: 5MB</div>
     </div>
 
     <button class="btn" id="payBtn" onclick="submitPayment()">Submit Payment</button>
-    <div class="small">After submission, we verify payment and then print.</div>
+    <div class="small">After submission, we verify payment and print.</div>
   </div>
 </div>
 
