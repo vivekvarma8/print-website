@@ -10,7 +10,7 @@ if (!order) {
 document.getElementById("info").innerText =
   `Order #${order.orderNumber} | Pages: ${order.pages} | Price: ₹${order.price}`;
 
-const msg = encodeURIComponent(`Hi, I want to check my order. Order Number: ${order.orderNumber}`);
+const msg = encodeURIComponent(`Hi, my Order Number is ${order.orderNumber}. Please confirm status.`);
 document.getElementById("waLink").href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
 
 async function submitPayment() {
