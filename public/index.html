@@ -7,35 +7,38 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="hero">
-      <div class="brand">
-        <div class="logo"></div>
-        <div class="title">
-          <h1>Online Print Service</h1>
-          <p class="sub">Black & White • Fast • Simple</p>
-        </div>
+
+<a class="waBtn" href="https://wa.me/YOUR_WHATSAPP_NUMBER?text=Hi%2C%20I%20want%20to%20ask%20about%20my%20order." target="_blank">WhatsApp</a>
+
+<div class="container">
+  <div class="hero">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="title">
+        <h1>Online Print Service</h1>
+        <p class="sub">Black & White • Fast • Simple</p>
       </div>
-      <div class="badge">B/W</div>
     </div>
-
-    <div class="card">
-      <div class="field">
-        <div class="label">Select file</div>
-        <input type="file" id="file">
-        <div class="small">Max file size: 10MB</div>
-      </div>
-
-      <div class="field">
-        <div class="label">Enter number of pages</div>
-        <input type="number" id="pages" placeholder="Example: 12">
-      </div>
-
-      <button class="btn" id="uploadBtn" onclick="upload()">Continue to Payment</button>
-      <div class="small">Pricing: 1–2 pages ₹5 • 3–10 ₹3/page • 10+ ₹2.5/page</div>
-    </div>
+    <div class="badge">B/W</div>
   </div>
 
-  <script src="/script.js"></script>
+  <div class="card">
+    <div class="field">
+      <div class="label">Select file</div>
+      <input type="file" id="file">
+      <div class="small">Max file size: 30MB</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Enter number of pages</div>
+      <input type="number" id="pages" placeholder="Example: 12">
+    </div>
+
+    <button class="btn" id="uploadBtn" onclick="upload()">Continue to Payment</button>
+    <div class="small">Pricing: 1–2 pages ₹5 • 3–10 ₹3/page • 10+ ₹2.5/page</div>
+  </div>
+</div>
+
+<script src="/script.js"></script>
 </body>
 </html>

@@ -82,12 +82,12 @@ const paymentStorage = multer.diskStorage({
 
 const uploadPrint = multer({
   storage: printStorage,
-  limits: { fileSize: 20 * 1024 * 1024 }
+  limits: { fileSize: 30 * 1024 * 1024 }
 });
 
 const uploadPayment = multer({
   storage: paymentStorage,
-  limits: { fileSize: 8 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 }
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -131,13 +131,14 @@ app.post("/upload", uploadPrint.single("printFile"), (req, res) => {
       paymentScreenshotName: null,
       status: "PENDING_PAYMENT",
       createdAt: new Date().toISOString(),
-      paidAt: null
+      paidAt: null,
+      filesDeletedAt: null
     });
     writeOrders(data);
 
     res.json({ orderNumber, pages, price });
   } catch (err) {
-    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "File too large. Max 10MB." });
+    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "File too large." });
     res.status(500).json({ error: "Upload failed" });
   }
 });
@@ -180,10 +181,49 @@ app.post("/pay", uploadPayment.single("screenshot"), async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "Screenshot too large. Max 5MB." });
+    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "Screenshot too large." });
     res.status(500).json({ error: "Payment saved, but email failed" });
   }
 });
+
+/* ---------- Auto delete files after TTL hours ---------- */
+const TTL_HOURS = Number(process.env.FILE_TTL_HOURS || 24);
+const TTL_MS = TTL_HOURS * 60 * 60 * 1000;
+
+function safeUnlink(filePath) {
+  try {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  } catch {}
+}
+
+function cleanupOldFiles() {
+  try {
+    const data = readOrders();
+    const now = Date.now();
+
+    let changed = false;
+
+    for (const order of data.orders) {
+      if (order.filesDeletedAt) continue;
+
+      const createdMs = new Date(order.createdAt).getTime();
+      if (!createdMs) continue;
+
+      if (now - createdMs >= TTL_MS) {
+        if (order.printFileName) safeUnlink(path.join(__dirname, "uploads", order.printFileName));
+        if (order.paymentScreenshotName) safeUnlink(path.join(__dirname, "payments", order.paymentScreenshotName));
+
+        order.filesDeletedAt = new Date().toISOString();
+        changed = true;
+      }
+    }
+
+    if (changed) writeOrders(data);
+  } catch {}
+}
+
+setInterval(cleanupOldFiles, 30 * 60 * 1000);
+cleanupOldFiles();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
