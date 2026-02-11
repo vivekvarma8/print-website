@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="title">
+        <h1>Complete Payment</h1>
+        <p class="sub">Scan QR and upload payment screenshot</p>
+      </div>
+    </div>
+    <div class="badge">B/W Printing</div>
+  </div>
+
+  <div class="card">
+    <div id="info" class="small" style="font-size:14px;color:#f3f3f6;margin-bottom:12px;"></div>
+
+    <div class="row" style="justify-content:center;">
+      <img class="qr" src="/qr.png" alt="QR Code">
+    </div>
+
+    <div class="field" style="margin-top:14px;">
+      <div class="label">Upload payment screenshot</div>
+      <input type="file" id="proof" accept="image/*">
+    </div>
+
+    <button class="btn" id="payBtn" onclick="submitPayment()">Submit Payment</button>
+    <div class="small">After submission, we verify payment and then print.</div>
+  </div>
+</div>
+
+<script src="/payment.js"></script>
+</body>
+</html>
