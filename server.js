@@ -82,12 +82,12 @@ const paymentStorage = multer.diskStorage({
 
 const uploadPrint = multer({
   storage: printStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }
+  limits: { fileSize: 20 * 1024 * 1024 }
 });
 
 const uploadPayment = multer({
   storage: paymentStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 8 * 1024 * 1024 }
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
