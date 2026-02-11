@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = "YOUR_WHATSAPP_NUMBER";
+const WHATSAPP_NUMBER = "917396498929";
 
 const order = JSON.parse(localStorage.getItem("order"));
 
