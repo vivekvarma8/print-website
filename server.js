@@ -14,10 +14,7 @@ if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 if (!fs.existsSync("payments")) fs.mkdirSync("payments");
 
 if (!fs.existsSync("orders.json")) {
-  fs.writeFileSync(
-    "orders.json",
-    JSON.stringify({ date: "", lastOrder: 0, orders: [] }, null, 2)
-  );
+  fs.writeFileSync("orders.json", JSON.stringify({ date: "", lastOrder: 0, orders: [] }, null, 2));
 }
 
 function readOrders() {
@@ -101,9 +98,11 @@ app.get("/ping", (req, res) => res.send("pong"));
 app.get("/admin", adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
+
 app.get("/admin.js", adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.js"));
 });
+
 app.get("/admin-data", adminAuth, (req, res) => {
   try {
     res.json(readOrders().orders);
@@ -112,10 +111,11 @@ app.get("/admin-data", adminAuth, (req, res) => {
   }
 });
 
-app.post("/upload", uploadPrint.single("printFile"), (req, res) => {
+app.post("/upload", uploadPrint.array("printFile", 10), (req, res) => {
   try {
     const pages = Number(req.body.pages);
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    if (!req.files || req.files.length === 0) return res.status(400).json({ error: "No files uploaded" });
+    if (req.files.length > 10) return res.status(400).json({ error: "Max 10 files allowed" });
     if (!pages || pages <= 0) return res.status(400).json({ error: "Invalid pages" });
 
     const orderNumber = nextOrderNumber();
@@ -126,8 +126,8 @@ app.post("/upload", uploadPrint.single("printFile"), (req, res) => {
       orderNumber,
       pages,
       price,
-      printFileName: req.file.filename,
-      printOriginalName: req.file.originalname,
+      printFileNames: req.files.map(f => f.filename),
+      printOriginalNames: req.files.map(f => f.originalname),
       paymentScreenshotName: null,
       status: "PENDING_PAYMENT",
       createdAt: new Date().toISOString(),
@@ -136,9 +136,9 @@ app.post("/upload", uploadPrint.single("printFile"), (req, res) => {
     });
     writeOrders(data);
 
-    res.json({ orderNumber, pages, price });
+    res.json({ orderNumber, pages, price, filesCount: req.files.length });
   } catch (err) {
-    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "File too large." });
+    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "One file is too large." });
     res.status(500).json({ error: "Upload failed" });
   }
 });
@@ -162,21 +162,44 @@ app.post("/pay", uploadPayment.single("screenshot"), async (req, res) => {
     if (!process.env.RESEND_API_KEY) return res.status(500).json({ error: "Missing RESEND_API_KEY" });
     if (!toEmail) return res.status(500).json({ error: "Missing ADMIN_EMAIL" });
 
-    const printPath = path.join(__dirname, "uploads", order.printFileName);
+    const baseUrl = process.env.PUBLIC_BASE_URL || "";
     const payPath = path.join(__dirname, "payments", order.paymentScreenshotName);
-
-    const printB64 = fs.readFileSync(printPath).toString("base64");
     const payB64 = fs.readFileSync(payPath).toString("base64");
+
+    let attachments = [
+      { filename: req.file.originalname, content: payB64 }
+    ];
+
+    let totalBytes = 0;
+    let addedFiles = 0;
+
+    for (let i = 0; i < (order.printFileNames || []).length; i++) {
+      const p = path.join(__dirname, "uploads", order.printFileNames[i]);
+      if (!fs.existsSync(p)) continue;
+      const b = fs.readFileSync(p);
+      totalBytes += b.length;
+      if (totalBytes <= 20 * 1024 * 1024) {
+        attachments.push({ filename: order.printOriginalNames[i] || order.printFileNames[i], content: b.toString("base64") });
+        addedFiles += 1;
+      }
+    }
+
+    const fileLinks = (order.printFileNames || [])
+      .map((f, idx) => `${idx + 1}) ${baseUrl ? baseUrl + "/uploads/" + f : "/uploads/" + f}`)
+      .join("\n");
+
+    const note = addedFiles < (order.printFileNames || []).length
+      ? `\nSome print files were not attached due to size limits.\nDownload links (valid until server restart/TTL):\n${fileLinks}\n`
+      : "";
 
     await resend.emails.send({
       from: "Print Website <onboarding@resend.dev>",
       to: [toEmail],
       subject: `New Print Order #${order.orderNumber}`,
-      text: `Order #${order.orderNumber}\nPages: ${order.pages}\nPrice: ₹${order.price}\nStatus: ${order.status}\n`,
-      attachments: [
-        { filename: order.printOriginalName, content: printB64 },
-        { filename: req.file.originalname, content: payB64 }
-      ]
+      text:
+        `Order #${order.orderNumber}\nPages: ${order.pages}\nPrice: ₹${order.price}\nFiles: ${(order.printFileNames || []).length}\nStatus: ${order.status}\n` +
+        note,
+      attachments
     });
 
     res.json({ success: true });
@@ -186,7 +209,6 @@ app.post("/pay", uploadPayment.single("screenshot"), async (req, res) => {
   }
 });
 
-/* ---------- Auto delete files after TTL hours ---------- */
 const TTL_HOURS = Number(process.env.FILE_TTL_HOURS || 24);
 const TTL_MS = TTL_HOURS * 60 * 60 * 1000;
 
@@ -200,19 +222,16 @@ function cleanupOldFiles() {
   try {
     const data = readOrders();
     const now = Date.now();
-
     let changed = false;
 
     for (const order of data.orders) {
       if (order.filesDeletedAt) continue;
-
       const createdMs = new Date(order.createdAt).getTime();
       if (!createdMs) continue;
 
       if (now - createdMs >= TTL_MS) {
-        if (order.printFileName) safeUnlink(path.join(__dirname, "uploads", order.printFileName));
+        (order.printFileNames || []).forEach(f => safeUnlink(path.join(__dirname, "uploads", f)));
         if (order.paymentScreenshotName) safeUnlink(path.join(__dirname, "payments", order.paymentScreenshotName));
-
         order.filesDeletedAt = new Date().toISOString();
         changed = true;
       }

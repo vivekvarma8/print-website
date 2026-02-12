@@ -1,14 +1,17 @@
 async function upload() {
   const btn = document.getElementById("uploadBtn");
-  const file = document.getElementById("file").files[0];
+  const files = document.getElementById("files").files;
   const pages = document.getElementById("pages").value;
 
-  if (!file) return alert("Select a file");
+  if (!files.length) return alert("Select files");
+  if (files.length > 10) return alert("Max 10 files allowed");
   if (!pages || Number(pages) <= 0) return alert("Enter valid pages");
-  if (file.size > 30 * 1024 * 1024) return alert("File too large. Max 30MB.");
 
   const fd = new FormData();
-  fd.append("printFile", file);
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].size > 30 * 1024 * 1024) return alert("One file is too large (max 30MB).");
+    fd.append("printFile", files[i]);
+  }
   fd.append("pages", pages);
 
   btn.disabled = true;

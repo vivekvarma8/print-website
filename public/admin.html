@@ -1,46 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin - Print Orders</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin Orders</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-<div class="container">
-  <div class="header">
-    <div class="brand">
-      <div class="logo"></div>
-      <div class="title">
-        <h1>Admin Dashboard</h1>
-        <p class="sub">Manage orders, proofs, and files</p>
+  <div class="container">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <h1>Admin Orders</h1>
+          <p class="sub">Latest orders</p>
+        </div>
       </div>
+      <div class="badge">ADMIN</div>
     </div>
 
-    <div class="controls">
-      <input class="input" id="search" placeholder="Search order #, pages, status..." />
-      <select class="select" id="filter">
-        <option value="ALL">All</option>
-        <option value="PENDING_PAYMENT">Pending</option>
-        <option value="PAID">Paid</option>
-        <option value="PRINTED">Printed</option>
-        <option value="COMPLETED">Completed</option>
-      </select>
-      <button class="button" id="refreshBtn">Refresh</button>
+    <div class="card">
+      <div id="list"></div>
     </div>
   </div>
 
-  <div class="kpis">
-    <div class="kpi"><div class="label">Total</div><div class="value" id="kpiTotal">0</div></div>
-    <div class="kpi"><div class="label">Pending</div><div class="value" id="kpiPending">0</div></div>
-    <div class="kpi"><div class="label">Paid</div><div class="value" id="kpiPaid">0</div></div>
-    <div class="kpi"><div class="label">Completed</div><div class="value" id="kpiCompleted">0</div></div>
-  </div>
-
-  <p id="status" class="small">Loading...</p>
-  <div id="grid" class="grid"></div>
-  <p class="small" id="auto">Auto refresh: every 10 seconds</p>
-</div>
-
-<script src="/admin.js"></script>
+  <script src="/admin.js"></script>
 </body>
 </html>

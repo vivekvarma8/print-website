@@ -8,8 +8,6 @@
 </head>
 <body>
 
-<a id="waLink" class="waBtn" href="#" target="_blank">WhatsApp</a>
-
 <div class="container">
   <div class="hero">
     <div class="brand">
@@ -36,7 +34,11 @@
     </div>
 
     <button class="btn" id="payBtn" onclick="submitPayment()">Submit Payment</button>
-    <div class="small">After submission, we verify payment and print.</div>
+
+    <div id="waWrap" style="display:none; margin-top:12px;">
+      <a id="waAfter" class="btn waAfterBtn" href="#" target="_blank">Send Order Number on WhatsApp</a>
+      <div class="small">Click this to message your Order Number.</div>
+    </div>
   </div>
 </div>
 

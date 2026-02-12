@@ -1,8 +1,8 @@
 :root{
   --bg:#0b0b0d;
-  --panel:rgba(18,18,22,.96);
-  --card:rgba(23,23,29,.98);
-  --border:rgba(42,42,53,.9);
+  --panel:#121216;
+  --card:#17171d;
+  --border:#2a2a35;
   --text:#f3f3f6;
   --muted:#b8b8c7;
 }
@@ -11,7 +11,7 @@
 
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   background: var(--bg);
   color: var(--text);
   min-height:100vh;
@@ -20,8 +20,8 @@ body{
 .container{
   width: min(560px, 94vw);
   margin: 12px auto;
-  padding: 12px;
-  background: var(--panel);
+  padding: 14px;
+  background: rgba(18,18,22,.96);
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: 0 18px 50px rgba(0,0,0,.55);
@@ -29,86 +29,115 @@ body{
 
 .hero{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:10px;
-  padding: 8px 6px 12px;
+  align-items:center;
+  padding-bottom:12px;
   border-bottom:1px solid rgba(42,42,53,.75);
 }
 
-.brand{display:flex; gap:10px; align-items:center}
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
 .logo{
-  width:42px;height:42px;border-radius:14px;
+  width:42px;
+  height:42px;
+  border-radius:12px;
   background: linear-gradient(135deg, rgba(255,255,255,0.20), rgba(255,255,255,0.06));
   border:1px solid rgba(255,255,255,0.14);
 }
-.title h1{margin:0;font-size:17px;letter-spacing:.2px}
-.sub{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+.title h1{
+  margin:0;
+  font-size:18px;
+}
+
+.sub{
+  font-size:12px;
+  color:var(--muted);
+  margin:2px 0 0;
+}
 
 .badge{
+  padding:6px 10px;
+  border-radius:20px;
+  background:#2a2a35;
   font-size:12px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(42,42,53,.9);
-  background: rgba(255,255,255,0.06);
-  white-space: nowrap;
 }
 
 .card{
-  background: var(--card);
+  background: rgba(23,23,29,.98);
   border: 1px solid rgba(42,42,53,.9);
   border-radius: 14px;
   padding: 14px;
   margin-top: 14px;
 }
 
-.field{display:flex; flex-direction:column; gap:8px; margin: 12px 0}
-.label{font-size:13px;color:var(--muted)}
+.field{
+  margin: 12px 0;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
 
-input[type="file"], input[type="number"]{
+.label{
+  font-size:13px;
+  color:var(--muted);
+}
+
+input{
   width:100%;
-  padding: 14px 12px;
-  border-radius: 12px;
-  background: rgba(12,12,16,0.65);
-  border: 1px solid rgba(42,42,53,.95);
-  color: var(--text);
+  padding:14px 12px;
+  border-radius:12px;
+  border:1px solid rgba(42,42,53,.95);
+  background:#0b0b0d;
+  color:white;
+  font-size:15px;
   outline:none;
-  font-size: 15px;
 }
 
 .btn{
   width:100%;
-  padding: 14px 14px;
-  border-radius: 14px;
-  border:1px solid rgba(84,84,110,.55);
-  background: rgba(58,58,70,.90);
-  color: var(--text);
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  background: linear-gradient(180deg,#4a4a5a,#2a2a35);
+  color:white;
+  font-size:16px;
+  font-weight:700;
   cursor:pointer;
-  font-size: 16px;
+  box-shadow:0 10px 28px rgba(0,0,0,.45);
 }
 
-.btn:disabled{opacity:.6; cursor:not-allowed}
+.btn:active{transform:scale(0.985)}
+.btn:disabled{opacity:0.65; cursor:not-allowed}
 
 .small{
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 6px;
-  line-height: 1.35;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.35;
+  margin-top:6px;
 }
 
-.center{display:flex; justify-content:center; margin: 12px 0}
+.center{
+  display:flex;
+  justify-content:center;
+  margin:14px 0;
+}
+
 .qr{
   width: min(240px, 75vw);
-  border-radius: 14px;
-  border: 1px solid rgba(42,42,53,.9);
-  padding: 10px;
+  border-radius:12px;
+  border:1px solid rgba(42,42,53,.9);
+  padding:10px;
   background: rgba(0,0,0,0.22);
 }
 
 .infoLine{
-  font-size: 14px;
-  color: var(--text);
-  margin-bottom: 10px;
+  font-size:14px;
+  margin-bottom:10px;
 }
 
 .waBtn{
@@ -121,7 +150,18 @@ input[type="file"], input[type="number"]{
   text-decoration: none;
   font-size: 14px;
   color: #fff;
-  background: rgba(34,197,94,.95);
-  border: 1px solid rgba(255,255,255,.12);
+  background: #25D366;
   box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+.waAfterBtn{
+  background: linear-gradient(180deg,#25D366,#128C7E);
+}
+
+.thumb{
+  width:100%;
+  max-height:180px;
+  object-fit:cover;
+  border-radius:12px;
+  border:1px solid rgba(42,42,53,.9);
 }

@@ -1,5 +1,4 @@
 const WHATSAPP_NUMBER = "917396498929";
-
 const order = JSON.parse(localStorage.getItem("order"));
 
 if (!order) {
@@ -10,15 +9,12 @@ if (!order) {
 document.getElementById("info").innerText =
   `Order #${order.orderNumber} | Pages: ${order.pages} | Price: ₹${order.price}`;
 
-const msg = encodeURIComponent(`Hi, my Order Number is ${order.orderNumber}. Please confirm status.`);
-document.getElementById("waLink").href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-
 async function submitPayment() {
   const btn = document.getElementById("payBtn");
   const file = document.getElementById("proof").files[0];
 
   if (!file) return alert("Upload payment screenshot");
-  if (file.size > 10 * 1024 * 1024) return alert("Screenshot too large. Max 10MB.");
+  if (file.size > 10 * 1024 * 1024) return alert("Screenshot too large (max 10MB).");
 
   const fd = new FormData();
   fd.append("screenshot", file);
@@ -39,12 +35,24 @@ async function submitPayment() {
       return;
     }
 
-    alert("Payment submitted. We will verify and print.");
-    localStorage.removeItem("order");
-    window.location.href = "/";
+    alert("Payment submitted successfully.");
+
+    const msg = encodeURIComponent(`Hi, I have submitted payment. My Order Number is ${order.orderNumber}`);
+    const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    document.getElementById("waAfter").href = link;
+    document.getElementById("waWrap").style.display = "block";
+
+    btn.innerText = "Submitted";
   } catch {
     alert("Network error. Try again.");
     btn.disabled = false;
     btn.innerText = oldText;
   }
 }
+
+document.getElementById("waAfter")?.addEventListener("click", () => {
+  setTimeout(() => {
+    localStorage.removeItem("order");
+    window.location.href = "/";
+  }, 800);
+});
