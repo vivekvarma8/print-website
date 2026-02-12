@@ -21,17 +21,17 @@ async function load() {
     wrap.style.background = "rgba(0,0,0,0.16)";
 
     const title = document.createElement("div");
-    title.style.fontWeight = "800";
+    title.style.fontWeight = "900";
     title.style.marginBottom = "6px";
     title.textContent = `Order #${o.orderNumber} • Pages: ${o.pages} • ₹${o.price} • ${o.status}`;
     wrap.appendChild(title);
 
-    const files = document.createElement("div");
-    files.style.fontSize = "12px";
-    files.style.color = "#b8b8c7";
-    files.style.marginBottom = "8px";
-    files.textContent = `Files: ${(o.printFileNames || []).length}`;
-    wrap.appendChild(files);
+    const info = document.createElement("div");
+    info.style.fontSize = "12px";
+    info.style.color = "#b8b8c7";
+    info.style.marginBottom = "8px";
+    info.textContent = `Files: ${(o.printFileNames || []).length} • Sides: ${o.printSides || "Single side"}`;
+    wrap.appendChild(info);
 
     const linksBox = document.createElement("div");
     linksBox.style.fontSize = "13px";
@@ -57,12 +57,6 @@ async function load() {
       a2.style.color = "#8ab4ff";
       a2.target = "_blank";
       linksBox.appendChild(a2);
-
-      const img = document.createElement("img");
-      img.src = `/payments/${o.paymentScreenshotName}`;
-      img.className = "thumb";
-      img.loading = "lazy";
-      linksBox.appendChild(img);
     }
 
     wrap.appendChild(linksBox);

@@ -30,6 +30,15 @@
     </div>
 
     <div class="field">
+      <div class="label">Printing</div>
+      <div class="seg">
+        <button type="button" class="segBtn active" id="singleBtn" onclick="setSides('single')">Single side</button>
+        <button type="button" class="segBtn" id="bothBtn" onclick="setSides('both')">Both sides</button>
+      </div>
+      <input type="hidden" id="printSides" value="single">
+    </div>
+
+    <div class="field">
       <div class="label">Enter total pages (all files combined)</div>
       <input type="number" id="pages" placeholder="Example: 12">
     </div>

@@ -1,7 +1,14 @@
+function setSides(val) {
+  document.getElementById("printSides").value = val;
+  document.getElementById("singleBtn").classList.toggle("active", val === "single");
+  document.getElementById("bothBtn").classList.toggle("active", val === "both");
+}
+
 async function upload() {
   const btn = document.getElementById("uploadBtn");
   const files = document.getElementById("files").files;
   const pages = document.getElementById("pages").value;
+  const printSides = document.getElementById("printSides").value;
 
   if (!files.length) return alert("Select files");
   if (files.length > 10) return alert("Max 10 files allowed");
@@ -12,7 +19,9 @@ async function upload() {
     if (files[i].size > 30 * 1024 * 1024) return alert("One file is too large (max 30MB).");
     fd.append("printFile", files[i]);
   }
+
   fd.append("pages", pages);
+  fd.append("printSides", printSides);
 
   btn.disabled = true;
   const oldText = btn.innerText;

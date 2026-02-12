@@ -98,11 +98,9 @@ app.get("/ping", (req, res) => res.send("pong"));
 app.get("/admin", adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
-
 app.get("/admin.js", adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.js"));
 });
-
 app.get("/admin-data", adminAuth, (req, res) => {
   try {
     res.json(readOrders().orders);
@@ -114,9 +112,13 @@ app.get("/admin-data", adminAuth, (req, res) => {
 app.post("/upload", uploadPrint.array("printFile", 10), (req, res) => {
   try {
     const pages = Number(req.body.pages);
+    const printSides = (req.body.printSides || "single").toLowerCase();
+
     if (!req.files || req.files.length === 0) return res.status(400).json({ error: "No files uploaded" });
     if (req.files.length > 10) return res.status(400).json({ error: "Max 10 files allowed" });
     if (!pages || pages <= 0) return res.status(400).json({ error: "Invalid pages" });
+
+    const sidesLabel = printSides === "both" ? "Both sides" : "Single side";
 
     const orderNumber = nextOrderNumber();
     const price = calcPrice(pages);
@@ -126,6 +128,7 @@ app.post("/upload", uploadPrint.array("printFile", 10), (req, res) => {
       orderNumber,
       pages,
       price,
+      printSides: sidesLabel,
       printFileNames: req.files.map(f => f.filename),
       printOriginalNames: req.files.map(f => f.originalname),
       paymentScreenshotName: null,
@@ -136,7 +139,7 @@ app.post("/upload", uploadPrint.array("printFile", 10), (req, res) => {
     });
     writeOrders(data);
 
-    res.json({ orderNumber, pages, price, filesCount: req.files.length });
+    res.json({ orderNumber, pages, price, printSides: sidesLabel, filesCount: req.files.length });
   } catch (err) {
     if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "One file is too large." });
     res.status(500).json({ error: "Upload failed" });
@@ -166,9 +169,7 @@ app.post("/pay", uploadPayment.single("screenshot"), async (req, res) => {
     const payPath = path.join(__dirname, "payments", order.paymentScreenshotName);
     const payB64 = fs.readFileSync(payPath).toString("base64");
 
-    let attachments = [
-      { filename: req.file.originalname, content: payB64 }
-    ];
+    let attachments = [{ filename: req.file.originalname, content: payB64 }];
 
     let totalBytes = 0;
     let addedFiles = 0;
@@ -197,7 +198,7 @@ app.post("/pay", uploadPayment.single("screenshot"), async (req, res) => {
       to: [toEmail],
       subject: `New Print Order #${order.orderNumber}`,
       text:
-        `Order #${order.orderNumber}\nPages: ${order.pages}\nPrice: ₹${order.price}\nFiles: ${(order.printFileNames || []).length}\nStatus: ${order.status}\n` +
+        `Order #${order.orderNumber}\nPages: ${order.pages}\nPrice: ₹${order.price}\nSides: ${order.printSides}\nFiles: ${(order.printFileNames || []).length}\nStatus: ${order.status}\n` +
         note,
       attachments
     });

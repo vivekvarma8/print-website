@@ -40,8 +40,15 @@
 <div id="waOverlay" class="overlay" style="display:none;">
   <div class="overlayCard">
     <div class="overlayTitle">Send your order number on WhatsApp</div>
-    <div class="overlaySub">This helps us match your payment quickly.</div>
-    <a id="waAfter" class="btn waAfterBtn" href="#" target="_blank">Open WhatsApp</a>
+
+    <a id="waAfter" class="btn waAfterBtn" href="#" target="_blank" style="display:none;">
+      <span class="waIcon"></span>
+      <span>Open WhatsApp</span>
+    </a>
+
+    <div id="waLoading" class="overlayLoading">
+      Uploading payment...
+    </div>
   </div>
 </div>
 
