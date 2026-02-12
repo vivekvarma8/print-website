@@ -35,13 +35,13 @@ async function submitPayment() {
       return;
     }
 
-    alert("Payment submitted successfully.");
-
     const msg = encodeURIComponent(`Hi, I have submitted payment. My Order Number is ${order.orderNumber}`);
     const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-    document.getElementById("waAfter").href = link;
-    document.getElementById("waWrap").style.display = "block";
 
+    document.getElementById("waAfter").href = link;
+
+    document.getElementById("page").classList.add("blurred");
+    document.getElementById("waOverlay").style.display = "flex";
     btn.innerText = "Submitted";
   } catch {
     alert("Network error. Try again.");
@@ -50,9 +50,9 @@ async function submitPayment() {
   }
 }
 
-document.getElementById("waAfter")?.addEventListener("click", () => {
+document.getElementById("waAfter").addEventListener("click", () => {
   setTimeout(() => {
     localStorage.removeItem("order");
     window.location.href = "/";
-  }, 800);
+  }, 900);
 });
